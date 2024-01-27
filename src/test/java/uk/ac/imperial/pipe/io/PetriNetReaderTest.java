@@ -45,6 +45,7 @@ import uk.ac.imperial.pipe.models.petrinet.Transition;
 
 public class PetriNetReaderTest {
 
+ 	
     private static final String DEFAULT_TOKEN = "Default";
     private static final String RED_TOKEN = "Red";
     PetriNetReader reader;

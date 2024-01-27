@@ -8,6 +8,10 @@ dependency-reduced-pom.xml
 .idea/
 *.iml
 
+.project
+.settings
+.classpath
+
 gen/
 src/main/antlr4/uk/ac/imperial/pipe/parsers/gen/
 .project

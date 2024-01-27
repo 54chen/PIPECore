@@ -223,6 +223,7 @@ public class PetriNetWriterTest extends XMLTestCase {
         // An available place does not (yet) exist in the PN, so won't be persisted.  Only the ordinary place will be written
         assertResultsEqual(XMLUtils.getSinglePlaceWithAvailableInterfaceStatusPath(), petriNet);
     }
+    
 
     private void assertResultsEqual(String expectedPath, PetriNet petriNet)
             throws IOException, SAXException, JAXBException, URISyntaxException {

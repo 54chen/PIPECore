@@ -106,7 +106,9 @@ public class PetriNetIOImpl implements PetriNetIO, ErrorHandler {
         this(false, true);
     }
 
-    /**
+    
+
+	/**
      * Writes the specified petri net to the given path
      *
      * @param path where Petri net will be written

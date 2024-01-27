@@ -4,7 +4,10 @@ import java.io.FileNotFoundException;
 
 import javax.xml.bind.JAXBException;
 
-import uk.ac.imperial.pipe.models.petrinet.PetriNet;
+import uk.ac.imperial.pipe.models.petrinet.PetriNet; 
+
+import javax.xml.bind.JAXBException;
+import java.io.FileNotFoundException;
 
 /**
  * API for reading Petri nets

@@ -185,6 +185,7 @@ public class DiscretePlace extends AbstractConnectable implements Place {
         setTokenCounts(counts);
     }
 
+    
     /**
      *
      * Sets the places token counts to those specified. Cannot exceed the capacity
@@ -422,7 +423,7 @@ public class DiscretePlace extends AbstractConnectable implements Place {
 
     /**
      *
-     * @return true
+     * @return true 
      */
     @Override
     public boolean isEndPoint() {

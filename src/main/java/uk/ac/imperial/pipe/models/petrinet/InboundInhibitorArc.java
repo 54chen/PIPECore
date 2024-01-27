@@ -19,6 +19,8 @@ public class InboundInhibitorArc extends InboundArc {
      * Constructor
      * @param source connectable of the arc
      * @param target connectable of the arc
+     * @param source connectable of the arc
+     * @param target connectable of the arc
      */
     public InboundInhibitorArc(Place source, Transition target) {
         super(source, target, new HashMap<String, String>(), ArcType.INHIBITOR);
