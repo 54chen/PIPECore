@@ -27,8 +27,6 @@ public final class ATimedTransition extends AnAbstractTransition<ATimedTransitio
         return new ATimedTransition(id);
     }
 
-
-
     /**
      *
      * @return class instance for chaining
@@ -37,7 +35,6 @@ public final class ATimedTransition extends AnAbstractTransition<ATimedTransitio
     protected ATimedTransition getInstance() {
         return this;
     }
-
 
     /**
      *
@@ -58,6 +55,16 @@ public final class ATimedTransition extends AnAbstractTransition<ATimedTransitio
      */
     public ATimedTransition andRate(String rate) {
         this.rate = rate;
+        return getInstance();
+    }
+
+    /**
+     * Sets the delay in milliseconds
+     * @param delay to wait before firing
+     * @return builder for chaining
+     */
+    public ATimedTransition andDelay(int delay) {
+        this.delay = delay;
         return getInstance();
     }
 

@@ -4,7 +4,7 @@
 
     <groupId>uk.ac.imperial</groupId>
     <artifactId>pipe-core</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>2.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>uk.ac.imperial</groupId>
             <artifactId>pipe-markov-chain</artifactId>
-            <version>1.0.4-SNAPSHOT</version>
+            <version>1.1.3-SNAPSHOT</version>
         </dependency>
 
         <dependency>
@@ -47,25 +47,25 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.8.3</version>
+            <version>1.9.4</version>
         </dependency>
 
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.0</version>
+            <version>3.2.2</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
+            <version>2.15.1</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>17.0</version>
+            <version>33.0.0-jre</version>
         </dependency>
 
         <dependency>
@@ -74,18 +74,28 @@
             <version>1.10.3.1</version>
         </dependency>
 
+        <!-- JUnit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- PowerMock modules -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.8.4</version>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>2.0.9</version>
             <scope>test</scope>
         </dependency>
+        
 		<dependency>
 		    <groupId>org.antlr</groupId>
 		    <artifactId>antlr4-runtime</artifactId>
@@ -112,6 +122,47 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+        	<groupId>javax.json</groupId>
+        	<artifactId>javax.json-api</artifactId>
+        	<version>1.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.glassfish</groupId>
+        	<artifactId>javax.json</artifactId>
+        	<version>1.0.4</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.logging.log4j</groupId>
+        	<artifactId>log4j-api</artifactId>
+        	<version>2.22.1</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.apache.logging.log4j</groupId>
+        	<artifactId>log4j-core</artifactId>
+        	<version>2.22.1</version>
+        </dependency>
+
+<!-- API, java.xml.bind module -->
+<dependency>
+  <groupId>jakarta.xml.bind</groupId>
+  <artifactId>jakarta.xml.bind-api</artifactId>
+  <version>2.3.2</version>
+</dependency>
+
+<!-- Runtime, com.sun.xml.bind module -->
+<dependency>
+  <groupId>org.glassfish.jaxb</groupId>
+  <artifactId>jaxb-runtime</artifactId>
+  <version>2.3.2</version>
+</dependency>
+ 
+
+		<dependency>
+		    <groupId>javax.activation</groupId>
+		    <artifactId>activation</artifactId>
+		    <version>1.1.1</version>
+		</dependency>			        
     </dependencies>
 
 
@@ -135,8 +186,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.0</version>
                     <configuration>
-                        <source>1.7</source>
-                        <target>1.7</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                     </configuration>
                 </plugin>
 
@@ -161,11 +212,66 @@
                     </executions>
                 </plugin>
 
+
             </plugins>
         </pluginManagement>
 
 
         <plugins>
+        	<!-- package everything in one single jar: mvn clean package assembly:assembly -->
+      		<plugin>
+        		<artifactId>maven-assembly-plugin</artifactId>
+        		<configuration>
+		          <descriptorRefs>
+        		    <descriptorRef>jar-with-dependencies</descriptorRef>
+		          </descriptorRefs>
+        		  <archive>
+		            <manifest>
+        		      <mainClass>um.ac.imperial.pipe.runner.PetriNetRunner</mainClass>
+		            </manifest>
+        		  </archive>
+		        </configuration>
+      		</plugin>
+      		
+           <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>uk.ac.imperial.pipe.runner.PetriNetRunner</mainClass>
+                                </transformer>
+                            </transformers>
+
+                            <filters>
+                                <filter>
+                                    <!--
+                                        Exclude files that sign a jar
+                                        (one or multiple of the dependencies).
+                                        One may not repack a signed jar without
+                                        this, or you will get a
+                                        SecurityException at program start.
+                                    -->
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/*.INF</exclude> <!-- This one may not be required -->
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
@@ -279,8 +385,5 @@
 
         </plugins>
     </build>
-
-
-
 
 </project>

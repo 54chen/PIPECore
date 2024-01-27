@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class APlaceTest {
@@ -23,7 +24,6 @@ public class APlaceTest {
     private Map<String, FunctionalRateParameter> rateParameters;
 
     private Map<String, Transition> transitions;
-
 
     @Before
     public void setUp() {
@@ -48,7 +48,7 @@ public class APlaceTest {
 
     @Test
     public void createsPlaceWithCapacity() {
-        Place place = APlace.withId("P0").andCapacity(5).create(tokens, places,transitions , rateParameters);
+        Place place = APlace.withId("P0").andCapacity(5).create(tokens, places, transitions, rateParameters);
         Place expected = new DiscretePlace("P0", "P0");
         expected.setCapacity(5);
         assertEquals(expected, place);
@@ -59,10 +59,19 @@ public class APlaceTest {
         tokens.put("Default", new ColoredToken("Default", Color.BLACK));
         tokens.put("Red", new ColoredToken("Red", Color.RED));
 
-        Place place = APlace.withId("P0").containing(5, "Red").tokens().and(1, "Default").token().create(tokens, places, transitions, rateParameters);
+        Place place = APlace.withId("P0").containing(5, "Red").tokens().and(1, "Default").token()
+                .create(tokens, places, transitions, rateParameters);
         Place expected = new DiscretePlace("P0", "P0");
         expected.setTokenCount("Red", 5);
         expected.setTokenCount("Default", 1);
         assertEquals(expected, place);
+    }
+
+    @Test
+    public void placeIsExternallyAccessible() throws Exception {
+        Place place = APlace.withId("P0").create(tokens, places, transitions, rateParameters);
+        assertFalse(place.getStatus().isExternal());
+        place = APlace.withId("P0").externallyAccessible().create(tokens, places, transitions, rateParameters);
+        assertTrue(place.getStatus().isExternal());
     }
 }

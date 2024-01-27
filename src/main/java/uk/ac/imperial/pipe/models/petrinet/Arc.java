@@ -155,16 +155,17 @@ public interface Arc<S extends Connectable, T extends Connectable> extends Petri
 
     /**
      *
-     * @param petriNet to evaluate
+     * @param executablePetriNet to evaluate
      * @param state of the Petri net
      * @return true if given the current state the arc can fire
      */
     //TODO: Don't pass in Petri net, get around this with better design
-    boolean canFire(PetriNet petriNet, State state);
+    boolean canFire(ExecutablePetriNet executablePetriNet, State state);
 
     /**
      * Removes the weight associated with the token from this arc
      * @param tokenId to remove weights for 
      */
     void removeAllTokenWeights(String tokenId);
+
 }

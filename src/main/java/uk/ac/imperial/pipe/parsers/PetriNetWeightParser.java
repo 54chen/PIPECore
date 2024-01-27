@@ -1,26 +1,24 @@
 package uk.ac.imperial.pipe.parsers;
 
-import com.google.common.primitives.Doubles;
-import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import uk.ac.imperial.pipe.models.petrinet.PetriNet;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
+import uk.ac.imperial.pipe.models.petrinet.AbstractPetriNet;
+
+import com.google.common.primitives.Doubles;
 
 /**
  * Parses functional expressions related to the specified Petri net
  */
 public class PetriNetWeightParser implements FunctionalWeightParser<Double> {
 
-
-    /**
-     * Petri net to parse results against
-     */
-    private final PetriNet petriNet;
+    private AbstractPetriNet abstractPetriNet;
 
     /**
      * Evaluator for the PetriNet and functional expression
@@ -31,17 +29,16 @@ public class PetriNetWeightParser implements FunctionalWeightParser<Double> {
      * Parses Transition Rates to determine their value and
      * the components they reference.
      * @param evalVisitor visitor to perform parsing 
-     * @param petriNet to be parsed 
+     * @param abstractPetriNet to be parsed 
      */
-    public PetriNetWeightParser(RateGrammarBaseVisitor<Double> evalVisitor, PetriNet petriNet) {
+    public PetriNetWeightParser(RateGrammarBaseVisitor<Double> evalVisitor, AbstractPetriNet abstractPetriNet) {
         this.evalVisitor = evalVisitor;
-        this.petriNet = petriNet;
+        this.abstractPetriNet = abstractPetriNet;
     }
-
 
     /**
      *
-     * @param parseTree
+     * @param parseTree to evaluate
      * @return components referenced by the functional expression that is being parsed
      */
     //TODO: Use memoization
@@ -52,22 +49,19 @@ public class PetriNetWeightParser implements FunctionalWeightParser<Double> {
         return listener.getComponentIds();
     }
 
-
-
     /**
-     *
+     * @param components to be evaluated
      * @return true if all referenced components in expression
      * are valid in the Petri net
      */
     private boolean allComponentsInPetriNet(Set<String> components) {
         for (String id : components) {
-            if (!petriNet.containsComponent(id)) {
+            if (!abstractPetriNet.containsComponent(id)) {
                 return false;
             }
         }
         return true;
     }
-
 
     /**
      * Evaluate the expression against the given Petri net
@@ -80,7 +74,6 @@ public class PetriNetWeightParser implements FunctionalWeightParser<Double> {
         if (maybeDouble != null) {
             return new FunctionalResults<>(maybeDouble, new HashSet<String>());
         }
-
 
         RateGrammarErrorListener errorListener = new RateGrammarErrorListener();
         ParseTree parseTree = GrammarUtils.parse(expression, errorListener);
@@ -116,11 +109,9 @@ public class PetriNetWeightParser implements FunctionalWeightParser<Double> {
 
         private Set<String> componentIds = new HashSet<>();
 
-
         @Override
         public void exitToken_number(
-                @NotNull
-                RateGrammarParser.Token_numberContext ctx) {
+                @NotNull RateGrammarParser.Token_numberContext ctx) {
             componentIds.add(ctx.ID().getText());
         }
 

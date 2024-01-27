@@ -7,8 +7,8 @@ import java.util.HashSet;
 /**
  * Used for naming components, listens to component
  *
- * This abstract class provides the implementation for getting unique names
- * It is up to subclasses to provide the implementation
+ * This abstract class provides unique names 
+ * Subclasses must call the constructor to set the namePrefix
  */
 public abstract class AbstractUniqueNamer implements UniqueNamer {
 
@@ -25,7 +25,7 @@ public abstract class AbstractUniqueNamer implements UniqueNamer {
     /**
      * Listens for name changes and will alter those that are in names
      */
-    protected final PropertyChangeListener nameListener =  new NameChangeListener(names);
+    protected final PropertyChangeListener nameListener = new NameChangeListener(names);
 
     /**
      * @param namePrefix Value to prefix component names with, e.g. "P" for place
@@ -34,7 +34,6 @@ public abstract class AbstractUniqueNamer implements UniqueNamer {
 
         this.namePrefix = namePrefix;
     }
-
 
     /**
      *

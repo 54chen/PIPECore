@@ -48,13 +48,15 @@ public abstract class AnAbstractTransition<T extends AnAbstractTransition> imple
      * Transition y location
      */
     private int y = 0;
+    /**
+     * Delay in milliseconds
+     */
+    protected int delay;
 
     public AnAbstractTransition(String id, boolean timed) {
         this.id = id;
         this.timed = timed;
     }
-
-
 
     /**
      *
@@ -66,8 +68,8 @@ public abstract class AnAbstractTransition<T extends AnAbstractTransition> imple
      */
     @Override
     public Transition create(Map<String, Token> tokens, Map<String, Place> places, Map<String, Transition> transitions,
-                             Map<String, FunctionalRateParameter> rateParameters) {
-        Transition transition = new DiscreteTransition(id, id);
+            Map<String, FunctionalRateParameter> rateParameters) {
+        Transition transition = buildTransition();
         transition.setPriority(priority);
         transition.setTimed(timed);
         transition.setInfiniteServer(infinite);
@@ -79,8 +81,16 @@ public abstract class AnAbstractTransition<T extends AnAbstractTransition> imple
         } else if (!rateParameter.isEmpty()) {
             transition.setRate(rateParameters.get(rateParameter));
         }
+        if (timed) {
+            transition.setDelay(delay);
+        }
 
         transitions.put(id, transition);
+        return transition;
+    }
+
+    protected Transition buildTransition() {
+        Transition transition = new DiscreteTransition(id, id);
         return transition;
     }
 
@@ -108,7 +118,7 @@ public abstract class AnAbstractTransition<T extends AnAbstractTransition> imple
      * @return builder for chaining
      */
     public T andIsASingle() {
-       infinite = false;
+        infinite = false;
         return getInstance();
     }
 
@@ -120,8 +130,6 @@ public abstract class AnAbstractTransition<T extends AnAbstractTransition> imple
     public T server() {
         return getInstance();
     }
-
-
 
     /**
      * Sets the location of the x, y locations

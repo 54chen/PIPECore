@@ -59,7 +59,7 @@ public class PasteVisitorTest {
         }
     }
 
-    private Matcher<Place> matchesThisPlaceWithCopiedNameAndId(Place place) {
+    private CopiedPlace matchesThisPlaceWithCopiedNameAndId(Place place) {
         return new CopiedPlace(place, PLACE_NAME);
     }
 
@@ -76,7 +76,7 @@ public class PasteVisitorTest {
         verify(petriNet).addPlace(argThat(matchesThisPlaceWithCopiedNameAndIdAndOffset(place, offset)));
     }
 
-    private Matcher<Place> matchesThisPlaceWithCopiedNameAndIdAndOffset(Place place, Point2D offset) {
+    private CopiedPlace matchesThisPlaceWithCopiedNameAndIdAndOffset(Place place, Point2D offset) {
         return new CopiedPlace(place, offset, mockNamer.getPlaceName());
     }
 
@@ -93,7 +93,7 @@ public class PasteVisitorTest {
         verify(petriNet).addTransition(argThat(matchesThisTransitionWithCopiedNameAndId(transition)));
     }
 
-    private Matcher<Transition> matchesThisTransitionWithCopiedNameAndId(Transition transition) {
+    private CopiedTransition matchesThisTransitionWithCopiedNameAndId(Transition transition) {
         return new CopiedTransition(transition, TRANSITION_NAME);
     }
 
@@ -111,8 +111,8 @@ public class PasteVisitorTest {
         verify(petriNet).addTransition(argThat(matchesThisTransitionWithCopiedNameAndIdAndOffset(transition, offset)));
     }
 
-    private Matcher<Transition> matchesThisTransitionWithCopiedNameAndIdAndOffset(Transition transition,
-                                                                                  Point2D offset) {
+    private CopiedTransition matchesThisTransitionWithCopiedNameAndIdAndOffset(Transition transition,
+            Point2D offset) {
         return new CopiedTransition(transition, offset, TRANSITION_NAME);
     }
 
@@ -133,7 +133,7 @@ public class PasteVisitorTest {
         verify(petriNet).addArc(argThat(hasCopiedIdAndNameAndBothComponentsAreCopied(arc)));
     }
 
-    private Matcher<InboundArc> hasCopiedIdAndNameAndBothComponentsAreCopied(InboundArc arc) {
+    private CopiedArc<InboundArc> hasCopiedIdAndNameAndBothComponentsAreCopied(InboundArc arc) {
         return new CopiedArc(arc, PLACE_NAME, TRANSITION_NAME);
     }
 
@@ -153,7 +153,7 @@ public class PasteVisitorTest {
         verify(petriNet).addArc(argThat(hasCopiedIdAndNameAndSourceCopied(arc)));
     }
 
-    private Matcher<InboundArc> hasCopiedIdAndNameAndSourceCopied(
+    private CopiedArc<InboundArc> hasCopiedIdAndNameAndSourceCopied(
             Arc<? extends Connectable, ? extends Connectable> arc) {
         return new CopiedArc<>(arc, PLACE_NAME, arc.getTarget().getName());
     }
@@ -184,10 +184,10 @@ public class PasteVisitorTest {
      * @param arc
      * @return
      */
-    private Matcher<InboundArc> hasCopiedIntermediatePoints(final Arc<Place, Transition> arc) {
+    private ArgumentMatcher<InboundArc> hasCopiedIntermediatePoints(final Arc<Place, Transition> arc) {
         return new ArgumentMatcher<InboundArc>() {
             @Override
-            public boolean matches(Object argument) {
+            public boolean matches(InboundArc argument) {
 
                 InboundArc otherArc = (InboundArc) argument;
                 List<ArcPoint> arcPoints = arc.getArcPoints();
@@ -223,7 +223,7 @@ public class PasteVisitorTest {
         verify(petriNet).addArc(argThat(hasCopiedIdAndNameAndTargetCopied(arc)));
     }
 
-    private Matcher<InboundArc> hasCopiedIdAndNameAndTargetCopied(
+    private CopiedArc<InboundArc> hasCopiedIdAndNameAndTargetCopied(
             Arc<? extends Connectable, ? extends Connectable> arc) {
         return new CopiedArc<>(arc, arc.getSource().getName(), TRANSITION_NAME);
     }
@@ -232,7 +232,7 @@ public class PasteVisitorTest {
      * Makes sure that the argument in matches is identical to the specified place
      * except name and id match id
      */
-    private static class CopiedPlace extends ArgumentMatcher<Place> {
+    private static class CopiedPlace implements ArgumentMatcher<Place> {
 
         /**
          * Place that should be copied
@@ -254,10 +254,10 @@ public class PasteVisitorTest {
         }
 
         @Override
-        public boolean matches(Object argument) {
+        public boolean matches(Place argument) {
             Place otherPlace = (Place) argument;
-            return (otherPlace.getId().equals(id) && otherPlace.getName().equals(id) && otherPlace.getX() == (
-                    place.getX() + offset.getX()) &&
+            return (otherPlace.getId().equals(id) && otherPlace.getName().equals(id) &&
+                    otherPlace.getX() == (place.getX() + offset.getX()) &&
                     otherPlace.getY() == (place.getY() + offset.getY()) &&
                     otherPlace.getNameXOffset() == place.getNameXOffset() &&
                     otherPlace.getNameYOffset() == place.getNameYOffset() &&
@@ -272,7 +272,7 @@ public class PasteVisitorTest {
      * Makes sure that the argument in matches is identical to the specified transition
      * except name and id have "_copied" appended to them
      */
-    private static class CopiedTransition extends ArgumentMatcher<Transition> {
+    private static class CopiedTransition implements ArgumentMatcher<Transition> {
 
         private final Point2D offset;
 
@@ -284,19 +284,17 @@ public class PasteVisitorTest {
             this(transition, new Point2D.Double(0, 0), id);
         }
 
-
         public CopiedTransition(Transition transition, Point2D offset, String id) {
             this.transition = transition;
             this.offset = offset;
             this.id = id;
         }
 
-
         @Override
-        public boolean matches(Object argument) {
+        public boolean matches(Transition argument) {
             Transition otherTransition = (Transition) argument;
-            return (otherTransition.getId().equals(id) && otherTransition.getName().equals(id)
-                    && otherTransition.getX() == (transition.getX() + offset.getX()) &&
+            return (otherTransition.getId().equals(id) && otherTransition.getName().equals(id) &&
+                    otherTransition.getX() == (transition.getX() + offset.getX()) &&
                     otherTransition.getY() == (transition.getY() + offset.getY()) &&
                     otherTransition.getNameXOffset() == transition.getNameXOffset() &&
                     otherTransition.getNameYOffset() == transition.getNameYOffset() &&
@@ -308,7 +306,7 @@ public class PasteVisitorTest {
         }
     }
 
-    private static class CopiedArc<T> extends ArgumentMatcher<T> {
+    private static class CopiedArc<T> implements ArgumentMatcher<T> {
 
         private final Arc<? extends Connectable, ? extends Connectable> arc;
 
@@ -324,13 +322,11 @@ public class PasteVisitorTest {
         }
 
         @Override
-        public boolean matches(Object argument) {
-            Arc<? extends Connectable, ? extends Connectable> otherArc =
-                    (Arc<? extends Connectable, ? extends Connectable>) argument;
+        public boolean matches(T argument) {
+            Arc<? extends Connectable, ? extends Connectable> otherArc = (Arc<? extends Connectable, ? extends Connectable>) argument;
 
-
-            return (otherArc.getSource().getName().equals(sourceName) && otherArc.getTarget().getName().equals(
-                    targetName));
+            return (otherArc.getSource().getName().equals(sourceName) &&
+                    otherArc.getTarget().getName().equals(targetName));
         }
     }
 

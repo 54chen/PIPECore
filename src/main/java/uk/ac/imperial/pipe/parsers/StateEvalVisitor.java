@@ -1,11 +1,11 @@
 package uk.ac.imperial.pipe.parsers;
 
-import uk.ac.imperial.pipe.exceptions.PetriNetComponentNotFoundException;
-import uk.ac.imperial.pipe.models.petrinet.Place;
-import uk.ac.imperial.pipe.models.petrinet.PetriNet;
-import uk.ac.imperial.state.State;
-
 import java.util.Map;
+
+import uk.ac.imperial.pipe.exceptions.PetriNetComponentNotFoundException;
+import uk.ac.imperial.pipe.models.petrinet.ExecutablePetriNet;
+import uk.ac.imperial.pipe.models.petrinet.Place;
+import uk.ac.imperial.state.State;
 
 /**
  * This class evaluates an expression based on a State so that the underlying
@@ -14,26 +14,22 @@ import java.util.Map;
  * It is particularly useful for any concurrent analysis.
  */
 public final class StateEvalVisitor extends RateGrammarBaseVisitor<Double> {
-    /**
-     * Petri net
-     */
-    private final PetriNet petriNet;
 
-    /**
-     * A state of the given Petri net
-     */
     private final State state;
+    /**
+     * Executable Petri net
+     */
+    private ExecutablePetriNet executablePetriNet;
 
     /**
      * Constructor
-     * @param petriNet to be visited
+     * @param executablePetriNet to be visited
      * @param state of the Petri net
      */
-    public StateEvalVisitor(PetriNet petriNet, State state) {
-        this.petriNet = petriNet;
+    public StateEvalVisitor(ExecutablePetriNet executablePetriNet, State state) {
+        this.executablePetriNet = executablePetriNet;
         this.state = state;
     }
-
 
     @Override
     public Double visitMultOrDiv(RateGrammarParser.MultOrDivContext ctx) {
@@ -107,7 +103,6 @@ public final class StateEvalVisitor extends RateGrammarBaseVisitor<Double> {
         return Math.ceil(value);
     }
 
-
     /**
      *
      * @param id of the place 
@@ -115,7 +110,7 @@ public final class StateEvalVisitor extends RateGrammarBaseVisitor<Double> {
      * @throws PetriNetComponentNotFoundException if the place is not found  
      */
     public Place getPlace(String id) throws PetriNetComponentNotFoundException {
-        return petriNet.getComponent(id, Place.class);
+        return executablePetriNet.getComponent(id, Place.class);
     }
 
 }

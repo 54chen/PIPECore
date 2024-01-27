@@ -3,6 +3,7 @@ pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.next
 release.properties
+dependency-reduced-pom.xml
 
 .idea/
 *.iml
@@ -13,3 +14,7 @@ release.properties
 
 gen/
 src/main/antlr4/uk/ac/imperial/pipe/parsers/gen/
+.project
+.classpath
+.settings/
+.vscode/settings.json

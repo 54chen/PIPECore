@@ -5,7 +5,9 @@ package uk.ac.imperial.pipe.exceptions;
  * when modifying the components it stores
  * known subclasses:  {@link PetriNetComponentNotFoundException}
  */
-public class PetriNetComponentException  extends Exception {
+public class PetriNetComponentException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     /**
      *
      * @param message message of exception

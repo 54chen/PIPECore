@@ -3,6 +3,7 @@ package uk.ac.imperial.pipe.dsl;
 import uk.ac.imperial.pipe.models.petrinet.DiscretePlace;
 import uk.ac.imperial.pipe.models.petrinet.Place;
 import uk.ac.imperial.pipe.models.petrinet.FunctionalRateParameter;
+import uk.ac.imperial.pipe.models.petrinet.PlaceStatusInterface;
 import uk.ac.imperial.pipe.models.petrinet.Token;
 import uk.ac.imperial.pipe.models.petrinet.Transition;
 
@@ -42,10 +43,22 @@ public final class APlace implements DSLCreator<Place> {
     private int y = 0;
 
     /**
+     * Flag indicating whether Place is in Interface, i.e. has {@link PlaceStatusInterface}
+     */
+    private boolean interfaceStatus = false;
+
+    /**
+     * Place is externally accessible, i.e. {@link PlaceStatusInterface#isExternal()} is true
+     */
+    private boolean external = false;
+
+    /**
      * Hidden constructor
      * @param id place id
      */
-    private APlace(String id) { this.id = id; }
+    private APlace(String id) {
+        this.id = id;
+    }
 
     /**
      *
@@ -107,7 +120,8 @@ public final class APlace implements DSLCreator<Place> {
      * @return created place
      */
     @Override
-    public Place create(Map<String, Token> tokens, Map<String, Place> places, Map<String, Transition> transitions, Map<String, FunctionalRateParameter> rateParameters) {
+    public Place create(Map<String, Token> tokens, Map<String, Place> places, Map<String, Transition> transitions,
+            Map<String, FunctionalRateParameter> rateParameters) {
         Place place = new DiscretePlace(id, id);
         place.setX(x);
         place.setY(y);
@@ -115,10 +129,15 @@ public final class APlace implements DSLCreator<Place> {
         place.setCapacity(capacity);
         place.setTokenCounts(tokenCounts);
 
+        if (interfaceStatus) {
+            PlaceStatusInterface status = new PlaceStatusInterface(place);
+            status.setExternal(external);
+            place.setStatus(status);
+        }
+
         places.put(id, place);
         return place;
     }
-
 
     /**
      * Chains adding tokens
@@ -142,6 +161,16 @@ public final class APlace implements DSLCreator<Place> {
     public APlace locatedAt(int x, int y) {
         this.x = x;
         this.y = y;
+        return this;
+    }
+
+    /**
+     * This place will be externally accessible, i.e., {@link PlaceStatusInterface#isExternal()} is true
+     * @return builder for chaining 
+     */
+    public APlace externallyAccessible() {
+        interfaceStatus = true;
+        external = true;
         return this;
     }
 }

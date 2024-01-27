@@ -4,6 +4,8 @@ import uk.ac.imperial.pipe.exceptions.PetriNetComponentException;
 import uk.ac.imperial.pipe.io.adapters.model.AdaptedPetriNet;
 import uk.ac.imperial.pipe.models.petrinet.PetriNetComponent;
 import uk.ac.imperial.pipe.models.petrinet.PetriNet;
+import uk.ac.imperial.pipe.models.petrinet.Place;
+import uk.ac.imperial.pipe.models.petrinet.name.NormalPetriNetName;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -20,6 +22,9 @@ public class PetriNetAdapter extends XmlAdapter<AdaptedPetriNet, PetriNet> {
     @Override
     public PetriNet unmarshal(AdaptedPetriNet v) throws PetriNetComponentException {
         PetriNet petriNet = new PetriNet();
+        if (v.id != null) {
+            petriNet.setName(new NormalPetriNetName(v.id));
+        }
         addToPetriNet(v.tokens, petriNet);
         addToPetriNet(v.annotations, petriNet);
         addToPetriNet(v.places, petriNet);
@@ -37,10 +42,16 @@ public class PetriNetAdapter extends XmlAdapter<AdaptedPetriNet, PetriNet> {
     @Override
     public AdaptedPetriNet marshal(PetriNet v) {
         AdaptedPetriNet petriNet = new AdaptedPetriNet();
+        if (!(v.getNameValue().trim().equals(""))) {
+            petriNet.id = v.getNameValue();
+        }
         petriNet.tokens = v.getTokens();
         petriNet.annotations = v.getAnnotations();
         petriNet.rateParameters = v.getRateParameters();
-        petriNet.places = v.getPlaces();
+        for (Place place : v.getPlaces()) {
+            petriNet.places.add(place);
+        }
+        //        petriNet.places = v.getPlaces();
         petriNet.transitions = v.getTransitions();
         petriNet.arcs = v.getArcs();
         return petriNet;

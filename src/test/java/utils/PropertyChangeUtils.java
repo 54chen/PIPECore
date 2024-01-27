@@ -10,7 +10,7 @@ public class PropertyChangeUtils {
         return new PropertyChangeNamer(name);
     }
 
-    public static class PropertyChangeNamer extends ArgumentMatcher<PropertyChangeEvent> {
+    public static class PropertyChangeNamer implements ArgumentMatcher<PropertyChangeEvent> {
 
         private String name;
 
@@ -19,7 +19,7 @@ public class PropertyChangeUtils {
         }
 
         @Override
-        public boolean matches(Object argument) {
+        public boolean matches(PropertyChangeEvent argument) {
             PropertyChangeEvent event = (PropertyChangeEvent) argument;
             return event.getPropertyName().equals(name);
         }

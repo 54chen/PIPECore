@@ -1,27 +1,25 @@
 package uk.ac.imperial.pipe.models.petrinet;
 
+import java.beans.PropertyChangeListener;
+
 import uk.ac.imperial.pipe.exceptions.PetriNetComponentException;
 import uk.ac.imperial.pipe.visitor.component.PetriNetComponentVisitor;
 
-import java.beans.PropertyChangeListener;
-
-
 public interface PetriNetComponent {
-
 
     /**
      * Message fired with the id field is set
      */
-    String ID_CHANGE_MESSAGE = "id";
+    public String ID_CHANGE_MESSAGE = "id";
 
     /**
      * Message fired when the name field is set
      */
-    String NAME_CHANGE_MESSAGE = "name";
+    public String NAME_CHANGE_MESSAGE = "name";
 
-    boolean isSelectable();
+    public boolean isSelectable();
 
-    boolean isDraggable();
+    public boolean isDraggable();
 
     /**
      * Visitor pattern, this is particularly useful when we do not know
@@ -30,28 +28,37 @@ public interface PetriNetComponent {
      * @param visitor to be accepted
      * @throws PetriNetComponentException if component not found or other logic error
      */
-    void accept(PetriNetComponentVisitor visitor) throws PetriNetComponentException;
+    public void accept(PetriNetComponentVisitor visitor) throws PetriNetComponentException;
 
     /**
      * @return objectId of this component
      * @return component Id
      */
-    String getId();
+    public String getId();
 
     /**
-     * 
+     *
      * @param id of the component
      */
-    void setId(String id);
+    public void setId(String id);
+
     /**
-     * 
-     * @param listener to be added 
+     *
+     * @param listener listener which will process all events of the implementing class
      */
-    void addPropertyChangeListener(PropertyChangeListener listener);
+    public void addPropertyChangeListener(PropertyChangeListener listener);
+
     /**
-     * 
-     * @param listener to be removed 
+    *
+    * @param propertyName name of the events to be listened for
+    * @param listener listener which will process propertyName events of the implementing class
+    */
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+
+    /**
+     *
+     * @param listener listener to no longer listen to events in the implementing class
      */
-    void removePropertyChangeListener(PropertyChangeListener listener);
+    public void removePropertyChangeListener(PropertyChangeListener listener);
 
 }
