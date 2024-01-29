@@ -97,7 +97,7 @@ public class PetriNetAnimationLogicTest {
     			ANormalArc.withSource("P0").andTarget("T0").with("#(P0)", "Default").token());
         State state = AnimationUtils.getState(petriNet);
         InboundArc arc = petriNet.getComponent("P0 TO T0", InboundArc.class);
-        assertFalse(arc.canFire(petriNet, state)); 
+        assertFalse(arc.canFire(petriNet.getExecutablePetriNet(), state)); 
         AnimationLogic animator = new PetriNetAnimationLogic(petriNet);
         Collection<Transition> transitions = animator.getEnabledTransitions(state);
         assertEquals(0, transitions.size());

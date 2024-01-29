@@ -7,7 +7,7 @@ import uk.ac.imperial.pipe.models.petrinet.Place;
 import uk.ac.imperial.pipe.models.petrinet.Token;
 import uk.ac.imperial.pipe.models.petrinet.Transition;
 import uk.ac.imperial.pipe.models.petrinet.PetriNet;
-import uk.ac.imperial.pipe.visitor.ClonePetriNet;
+import uk.ac.imperial.pipe.visitor.PetriNetCloner;
 
 import java.awt.Color;
 import java.util.Collection;
@@ -236,7 +236,7 @@ public class PetriNetAnimatorTest {
     @Test
     public void restoresPetriNet() throws PetriNetComponentException {
         PetriNet petriNet = createSimplePetriNet(1);
-        PetriNet copy = ClonePetriNet.clone(petriNet);
+        PetriNet copy = PetriNetCloner.clone(petriNet);
 
         Animator animator = new PetriNetAnimator(petriNet);
         animator.fireTransition(animator.getRandomEnabledTransition());

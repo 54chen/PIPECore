@@ -166,7 +166,7 @@ public class DiscreteTransitionTest {
         State state = AnimationUtils.getState(petriNet);
 
         Transition t0 = petriNet.getComponent("T0", Transition.class);
-        double actualRate = t0.getActualRate(petriNet, state);
+        double actualRate = t0.getActualRate(petriNet.getExecutablePetriNet());
         int expectedEnablingDegree = 2;
         int expectedISRate = expectedEnablingDegree * 4;
         assertEquals(expectedISRate, actualRate, 0.0001);
@@ -183,7 +183,7 @@ public class DiscreteTransitionTest {
         State state = AnimationUtils.getState(petriNet);
 
         Transition t0 = petriNet.getComponent("T0", Transition.class);
-        double actualRate = t0.getActualRate(petriNet, state);
+        double actualRate = t0.getActualRate(petriNet.getExecutablePetriNet());
         int expectedEnablingDegree = 1;
         int expectedISRate = expectedEnablingDegree * 4;
         assertEquals(expectedISRate, actualRate, 0.0001);
@@ -193,16 +193,27 @@ public class DiscreteTransitionTest {
     @Test
     public void actualRateSingleServer()
             throws PetriNetComponentException {
-        PetriNet petriNet = APetriNet.with(AToken.called("Default").withColor(Color.BLACK)).and(
+        PetriNet petriNet = APetriNet.with(AToken.called("Default").withColor(Color.BLACK)).
+        and(
                 APlace.withId("P0").and(5, "Default").tokens()).and(APlace.withId("P1").and(2, "Default").tokens()).and(
                 ATimedTransition.withId("T0").andIsASingle().server().andRate("4")).and(
                 ANormalArc.withSource("P0").andTarget("T0").with("1", "Default").token()).andFinally(
-                ANormalArc.withSource("P1").andTarget("T0").and("1)", "Default").token());
+                ANormalArc.withSource("P1").andTarget("T0").and("1", "Default").token());
         State state = AnimationUtils.getState(petriNet);
 
         Transition t0 = petriNet.getComponent("T0", Transition.class);
-        double actualRate = t0.getActualRate(petriNet, state);
+        double actualRate = t0.getActualRate(petriNet.getExecutablePetriNet());
         assertEquals(4, actualRate, 0.0001);
+
+        // PetriNet petriNet = APetriNet.with(AToken.called("Default").withColor(Color.BLACK))
+        // .and(APlace.withId("P0").and(5, "Default").tokens()).and(APlace.withId("P1").and(2, "Default").tokens())
+        // .and(ATimedTransition.withId("T0").andIsASingle().server().andRate("4"))
+        // .and(ANormalArc.withSource("P0").andTarget("T0").with("1", "Default").token())
+        // .andFinally(ANormalArc.withSource("P1").andTarget("T0").and("1", "Default").token());
+          // executablePetriNet = petriNet.getExecutablePetriNet();
+          // Transition t0 = executablePetriNet.getComponent("T0", Transition.class);
+          // double actualRate = t0.getActualRate(executablePetriNet);
+          // assertEquals(4, actualRate, 0.0001);
     }
 
     @Test
@@ -238,7 +249,7 @@ public class DiscreteTransitionTest {
                 ATimedTransition.withId("T0").andIsASingle().server().andRate("#(P0)")).andFinally(
                 ANormalArc.withSource("P0").andTarget("T0").with("1", "Default").token());
         Transition transition = petriNet.getComponent("T0", Transition.class);
-        double rate = transition.getActualRate(petriNet, AnimationUtils.getState(petriNet));
+        double rate = transition.getActualRate(petriNet.getExecutablePetriNet());
         assertEquals(5, rate, 0.0001);
     }
 }

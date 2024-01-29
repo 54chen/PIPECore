@@ -147,7 +147,7 @@ public final class PetriNetAnimationLogic implements AnimationLogic {
      */
     @Override
     public double getArcWeight(State state, String weight) {
-        StateEvalVisitor evalVisitor = new StateEvalVisitor(petriNet, state);
+        StateEvalVisitor evalVisitor = new StateEvalVisitor(petriNet.getExecutablePetriNet(), state);
         PetriNetWeightParser parser = new PetriNetWeightParser(evalVisitor, petriNet);
         FunctionalResults<Double> result = parser.evaluateExpression(weight);
         if (result.hasErrors()) {
@@ -221,12 +221,12 @@ public final class PetriNetAnimationLogic implements AnimationLogic {
      */
     private boolean isEnabled(Transition transition, State state) {
         for (Arc<Place, Transition> arc : petriNet.inboundArcs(transition)) {
-            if (!arc.canFire(petriNet, state)) {
+            if (!arc.canFire(petriNet.getExecutablePetriNet(), state)) {
                 return false;
             }
         }
         for (Arc<Transition, Place> arc : petriNet.outboundArcs(transition)) {
-            if (!arc.canFire(petriNet, state)) {
+            if (!arc.canFire(petriNet.getExecutablePetriNet(), state)) {
                 return false;
             }
         }
