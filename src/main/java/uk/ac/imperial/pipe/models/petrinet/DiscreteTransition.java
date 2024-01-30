@@ -82,5 +82,4 @@ public class DiscreteTransition extends AbstractTransition implements Transition
         }
         return true;
     }
-
 }

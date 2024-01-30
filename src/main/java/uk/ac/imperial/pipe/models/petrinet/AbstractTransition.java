@@ -565,5 +565,9 @@ public abstract class AbstractTransition extends AbstractConnectable implements 
     public int getDelay() {
         return delay;
     }
-
+    
+    @Override
+    public int compareTo(Transition o) {
+        return this.getId().compareTo(o.getId());
+    }
 }

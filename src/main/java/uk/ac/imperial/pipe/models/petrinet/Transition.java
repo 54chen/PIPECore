@@ -6,7 +6,7 @@ import java.beans.PropertyChangeListener;
  * A transition is a Petri net component that is responsible for firing and thus moving
  * tokens from inbound places to outbound places
  */
-public interface Transition extends Connectable, PropertyChangeListener {
+public interface Transition extends Connectable, PropertyChangeListener, Comparable<Transition> {
     /**
      * Message fired when the Transitions priority changes
      */

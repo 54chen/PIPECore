@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import uk.ac.imperial.state.State;
 
@@ -31,7 +32,7 @@ public class TimingQueue {
         Iterator<Entry<Long, Set<Transition>>> entryIterator = timedTrans.entrySet().iterator();
         while (entryIterator.hasNext()) {
             Entry<Long, Set<Transition>> nextEntry = entryIterator.next();
-            this.enabledTimedTransitions.put(nextEntry.getKey(), new HashSet<>(nextEntry.getValue()));
+            this.enabledTimedTransitions.put(nextEntry.getKey(), new ConcurrentSkipListSet<>(nextEntry.getValue()));
         }
     }
 
@@ -250,7 +251,7 @@ public class TimingQueue {
             queuedTransitions = this.enabledTimedTransitions.get(nextFiringTime);
             addTransition(transition, nextFiringTime, queuedTransitions);
         } else {
-            queuedTransitions = new HashSet<>();
+            queuedTransitions = new ConcurrentSkipListSet<>();
             addTransition(transition, nextFiringTime, queuedTransitions);
         }
     }
