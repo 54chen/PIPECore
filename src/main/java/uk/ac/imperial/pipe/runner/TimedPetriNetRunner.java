@@ -29,7 +29,9 @@ public class TimedPetriNetRunner extends PetriNetRunner {
     public TimedPetriNetRunner(PetriNet petriNet) {
         super(petriNet);
     }
-
+    public TimedPetriNetRunner(String string) {
+      super(string);
+  }
     /**
      * Fires all immediate and due timed transitions as well as providing the next 
      * time a timed transition would be up for firing.
@@ -86,7 +88,7 @@ public class TimedPetriNetRunner extends PetriNetRunner {
          * while ((round < firingLimit) && transitionsToFire()) { round++;
          * fireOneTransition(); }
          */
-        end();
+        //end();
     }
 
     public Thread getTimedRunnerThread() {

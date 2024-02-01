@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.google.common.collect.Sets;
 
@@ -335,7 +336,7 @@ public final class PetriNetAnimationLogic implements AnimationLogic, PropertyCha
     }
 
     protected void initMarkedEnabledTransitions() {
-        markedEnabledTransitions = new HashSet<>();
+        markedEnabledTransitions = new ConcurrentSkipListSet<Transition>();
     }
 
 }
